@@ -1,5 +1,6 @@
 import '../styles/form.css'
 import { useState, useEffect } from 'react'
+import axios from 'axios'
 
 const Form = () => {
     const [number, setNumber] = useState(0)
@@ -22,6 +23,21 @@ const Form = () => {
         setItem([name, price, amount, time, date])
         setExpenses({...expenses, [status.getFullYear()]: { [status.getMonth() + 1]: {[status.getDate()]: {[value]: { item: name, price: price, amount: amount, time: time, date: date}}}}})
         setNumber(++value)
+        const newrow = {
+          name: name,
+          price: price,
+          quantity: amount,
+          time: time,
+          date: date,
+        };
+        console.log(newrow)
+    
+        axios
+          .post("http://localhost:5000/history/add", newrow)
+          .then((res) => console.log(res.data));
+    
+        // We will empty the state after posting the data to the database
+
     }
     console.log(item);
     console.log(expenses);
@@ -63,11 +79,3 @@ const Form = () => {
 
 export default Form
 
-
-export async function getStaticProps() {
-  return {
-    props: {
-      expenses: expenses,
-    }
-  }
-}
